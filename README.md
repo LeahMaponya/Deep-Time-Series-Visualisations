@@ -1,1 +1,1 @@
-# Deep-Time-Series-Visualisations
+# Deep Time Series Visualisations
