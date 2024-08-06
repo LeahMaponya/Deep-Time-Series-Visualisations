@@ -10,11 +10,6 @@ from sklearn import datasets
 import matplotlib.pyplot as plt
 
 
-
-# import numpy as np
-# import pandas as pd
-# import matplotlib.pyplot as plt
-#
 # # Seed the random number generator for reproducibility
 # rng = np.random.default_rng(123)
 #
