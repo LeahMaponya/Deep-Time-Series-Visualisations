@@ -11,216 +11,97 @@ import matplotlib.pyplot as plt
 
 
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
-# Seed the random number generator for reproducibility
-rng = np.random.default_rng(123)
-
-# Build a dataset with 10 prediction points and 4 features for each
-df = pd.DataFrame({
-    "name": [f"Prediction {i}" for i in range(1, 11) for _ in range(4)],
-    "value": rng.integers(low=30, high=100, size=40),
-    "feature": ["Feature 1", "Feature 2", "Feature 3", "Feature 4"] * 10
-})
-
-def get_label_rotation(angle, offset):
-    # Rotation must be specified in degrees
-    rotation = np.rad2deg(angle + offset)
-    if angle <= np.pi:
-        alignment = "right"
-        rotation = rotation + 180
-    else:
-        alignment = "left"
-    return rotation, alignment
-
-def add_labels(angles, values, labels, offset, ax):
-    # This is the space between the end of the bar and the label
-    padding = 4
-
-    # Iterate over angles, values, and labels, to add all of them.
-    for angle, value, label in zip(angles, values, labels):
-        # Obtain text rotation and alignment
-        rotation, alignment = get_label_rotation(angle, offset)
-
-        # And finally add the text
-        ax.text(
-            x=angle,
-            y=value + padding,
-            s=label,
-            ha=alignment,
-            va="center",
-            rotation=rotation,
-            rotation_mode="anchor"
-        )
-
-# Calculate angles and setup for the plot
-PAD = 2  # Reduced padding for a more compact plot
-GROUPS_SIZE = [len(i[1]) for i in df.groupby("name")]
-ANGLES_N = len(df) + PAD * len(GROUPS_SIZE)
-ANGLES = np.linspace(0, 2 * np.pi, num=ANGLES_N, endpoint=False)
-WIDTH = (2 * np.pi) / ANGLES_N
-
-# Initialize IDXS to determine the positions of bars
-offset = 0
-IDXS = []
-for size in GROUPS_SIZE:
-    IDXS += list(range(offset + PAD, offset + size + PAD))
-    offset += size + PAD
-
-# Assign colors to the bars based on their feature
-COLORS = [f"C{i%4}" for i in range(len(df))]
-VALUES = df["value"].values
-LABELS = df["feature"].values
-
-# Plotting
-fig, ax = plt.subplots(figsize=(15, 8), subplot_kw={"projection": "polar"})
-
-OFFSET = np.pi / 2
-ax.set_theta_offset(OFFSET)
-ax.set_ylim(-100, 100)
-ax.set_frame_on(False)
-ax.xaxis.grid(False)
-ax.yaxis.grid(False)
-ax.set_xticks([])
-ax.set_yticks([])
-
-# Draw bars
-ax.bar(
-    ANGLES[IDXS], VALUES, width=WIDTH, color=COLORS,
-    edgecolor="white", linewidth=2
-)
-
-# Add labels
-add_labels(ANGLES[IDXS], VALUES, LABELS, OFFSET, ax)
-
-# Display the plot
-plt.show()
-
-
+# import numpy as np
+# import pandas as pd
+# import matplotlib.pyplot as plt
+#
+# # Seed the random number generator for reproducibility
+# rng = np.random.default_rng(123)
+#
+# # Build a dataset with 10 prediction points and 4 features for each
+# df = pd.DataFrame({
+#     "name": [f"Prediction {i}" for i in range(1, 11) for _ in range(4)],
+#     "value": rng.integers(low=30, high=100, size=40),
+#     "feature": ["Feature 1", "Feature 2", "Feature 3", "Feature 4"] * 10
+# })
+#
+# def get_label_rotation(angle, offset):
+#     # Rotation must be specified in degrees
+#     rotation = np.rad2deg(angle + offset)
+#     if angle <= np.pi:
+#         alignment = "right"
+#         rotation = rotation + 180
+#     else:
+#         alignment = "left"
+#     return rotation, alignment
+#
+# def add_labels(angles, values, labels, offset, ax):
+#     # This is the space between the end of the bar and the label
+#     padding = 4
+#
+#     # Iterate over angles, values, and labels, to add all of them.
+#     for angle, value, label in zip(angles, values, labels):
+#         # Obtain text rotation and alignment
+#         rotation, alignment = get_label_rotation(angle, offset)
+#
+#         # And finally add the text
+#         ax.text(
+#             x=angle,
+#             y=value + padding,
+#             s=label,
+#             ha=alignment,
+#             va="center",
+#             rotation=rotation,
+#             rotation_mode="anchor"
+#         )
+#
+# # Calculate angles and setup for the plot
+# PAD = 2  # Reduced padding for a more compact plot
+# GROUPS_SIZE = [len(i[1]) for i in df.groupby("name")]
+# ANGLES_N = len(df) + PAD * len(GROUPS_SIZE)
+# ANGLES = np.linspace(0, 2 * np.pi, num=ANGLES_N, endpoint=False)
+# WIDTH = (2 * np.pi) / ANGLES_N
+#
+# # Initialize IDXS to determine the positions of bars
+# offset = 0
+# IDXS = []
+# for size in GROUPS_SIZE:
+#     IDXS += list(range(offset + PAD, offset + size + PAD))
+#     offset += size + PAD
+#
+# # Assign colors to the bars based on their feature
+# COLORS = [f"C{i%4}" for i in range(len(df))]
+# VALUES = df["value"].values
+# LABELS = df["feature"].values
+#
+# # Plotting
+# fig, ax = plt.subplots(figsize=(15, 8), subplot_kw={"projection": "polar"})
+#
+# OFFSET = np.pi / 2
+# ax.set_theta_offset(OFFSET)
+# ax.set_ylim(-100, 100)
+# ax.set_frame_on(False)
+# ax.xaxis.grid(False)
+# ax.yaxis.grid(False)
+# ax.set_xticks([])
+# ax.set_yticks([])
+#
+# # Draw bars
+# ax.bar(
+#     ANGLES[IDXS], VALUES, width=WIDTH, color=COLORS,
+#     edgecolor="white", linewidth=2
+# )
+#
+# # Add labels
+# add_labels(ANGLES[IDXS], VALUES, LABELS, OFFSET, ax)
+#
+# # Display the plot
+# plt.show()
 
 
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
-# Create dataset
-data = pd.DataFrame({
-    'individual': [f'Mister {i}' for i in range(1, 61)],
-    'group': ['A'] * 10 + ['B'] * 30 + ['C'] * 14 + ['D'] * 6,
-    'value1': np.random.randint(10, 101, 60),
-    'value2': np.random.randint(10, 101, 60),
-    'value3': np.random.randint(10, 101, 60)
-})
 
-data = pd.melt(data, id_vars=['individual', 'group'], var_name='observation', value_name='value')
-
-empty_bar = 2
-nObsType = data['observation'].nunique()
-to_add = pd.DataFrame(np.nan, index=range(empty_bar * data['group'].nunique() * nObsType), columns=data.columns)
-to_add['group'] = np.repeat(data['group'].unique(), empty_bar * nObsType)
-data = pd.concat([data, to_add])
-data = data.sort_values(['group', 'individual'])
-data['id'] = np.repeat(range(1, len(data) // nObsType + 1), nObsType)
-
-label_data = data.groupby(['id', 'individual'])['value'].sum().reset_index(name='tot')
-number_of_bar = len(label_data)
-
-base_data = data.groupby('group').agg({'id': ['min', 'max']}).reset_index()
-base_data.columns = ['group', 'start', 'end']
-base_data['end'] = base_data['end'] - empty_bar
-
-grid_data = base_data.copy()
-grid_data['end'] = np.roll(grid_data['end'] + 1, 1)
-grid_data['start'] = grid_data['start'] - 1
-grid_data = grid_data.iloc[1:]
-
-fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(projection='polar'))
-
-for obs in data['observation'].unique():
-    obs_data = data[data['observation'] == obs]
-    ax.bar(obs_data['id'] * 2 * np.pi / number_of_bar, obs_data['value'],
-           width=2*np.pi/number_of_bar, bottom=0, alpha=0.5)
-
-for _, row in grid_data.iterrows():
-    ax.plot([row['start']*2*np.pi/number_of_bar, row['end']*2*np.pi/number_of_bar],
-            [0, 0], color='grey', alpha=0.3)
-    for y in [50, 100, 150, 200]:
-        ax.plot([row['start']*2*np.pi/number_of_bar, row['end']*2*np.pi/number_of_bar],
-                [y, y], color='grey', alpha=0.3)
-
-ax.set_ylim(-150, label_data['tot'].max())
-
-ax.set_yticks([])
-ax.set_xticks([])
-
-for _, row in base_data.iterrows():
-    start_angle = row['start'] * 2 * np.pi / number_of_bar
-    end_angle = row['end'] * 2 * np.pi / number_of_bar
-    ax.plot([start_angle, end_angle], [-5, -5], color='black', alpha=0.8, linewidth=0.6)
-
-plt.tight_layout()
-plt.show()
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Create dataset
-data = pd.DataFrame({
-    'individual': [f'Mister {i}' for i in range(1, 61)],
-    'group': ['A'] * 10 + ['B'] * 30 + ['C'] * 14 + ['D'] * 6,
-    'value1': np.random.randint(10, 101, 60),
-    'value2': np.random.randint(10, 101, 60),
-    'value3': np.random.randint(10, 101, 60)
-})
-
-data = pd.melt(data, id_vars=['individual', 'group'], var_name='observation', value_name='value')
-
-empty_bar = 2
-nObsType = data['observation'].nunique()
-to_add = pd.DataFrame(np.nan, index=range(empty_bar * data['group'].nunique() * nObsType), columns=data.columns)
-to_add['group'] = np.repeat(data['group'].unique(), empty_bar * nObsType)
-data = pd.concat([data, to_add])
-data = data.sort_values(['group', 'individual'])
-data['id'] = np.repeat(range(1, len(data) // nObsType + 1), nObsType)
-
-label_data = data.groupby(['id', 'individual'])['value'].sum().reset_index(name='tot')
-number_of_bar = len(label_data)
-
-base_data = data.groupby('group').agg({'id': ['min', 'max']}).reset_index()
-base_data.columns = ['group', 'start', 'end']
-base_data['end'] = base_data['end'] - empty_bar
-
-fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(projection='polar'))
-
-# Adjust bar width to create spaces
-bar_width = 0.8 * 2 * np.pi / number_of_bar
-
-for obs in data['observation'].unique():
-    obs_data = data[data['observation'] == obs]
-    ax.bar(obs_data['id'] * 2 * np.pi / number_of_bar,
-           obs_data['value'],
-           width=bar_width,
-           bottom=0,
-           alpha=0.5)
-
-ax.set_ylim(-150, label_data['tot'].max())
-ax.set_yticks([])
-ax.set_xticks([])
-
-for _, row in base_data.iterrows():
-    start_angle = row['start'] * 2 * np.pi / number_of_bar
-    end_angle = row['end'] * 2 * np.pi / number_of_bar
-    ax.plot([start_angle, end_angle], [-5, -5], color='black', alpha=0.8, linewidth=0.6)
-
-# Keep the circular spine visible
-ax.spines['polar'].set_visible(True)
-
-plt.tight_layout()
-plt.show()
 
 
 import numpy as np
@@ -250,217 +131,62 @@ feat_att5=res['results'][2927][(0,0)]['attributions']
 feat_att6=res['results'][2928][(0,0)]['attributions']
 
 
-import matplotlib.pyplot as plt
-import numpy as np
+# import matplotlib.pyplot as plt
+# import numpy as np
+#
+# # Assuming you extracted feature attributions correctly
+# feat_atts = [res['results'][i][(0, 0)]['attributions'].detach().numpy() for i in range(2923, 2933)]  # Adjust range for number of predictions
+#
+# # Number of prediction points, features, and time steps (adjusted based on your data)
+# prediction_points = len(feat_atts)
+# features = ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4']
+# time_steps = 4  # Adjusted to match the size of the last dimension of the data
+#
+# # Convert the list of arrays into a 3D NumPy array for easy plotting
+# data = np.array(feat_atts)
+#
+# # Create a plot
+# fig, ax = plt.subplots(figsize=(12, 6))
+#
+# # Positioning of bars on the x-axis for prediction points
+# x = np.arange(prediction_points)
+#
+# # Bar width and space between feature groups within each prediction point
+# bar_width = 0.15
+# space_between_features = 0.05
+#
+# # Colors for the different time steps in each segment
+# colors = plt.cm.viridis(np.linspace(0, 1, time_steps))
+#
+# # Plotting stacked bars for each feature within each prediction point
+# for i, feature in enumerate(features):
+#     for j in range(time_steps):
+#         if j == 0:
+#             ax.bar(x + i * (bar_width + space_between_features), data[:, i, j], bar_width, label=f'Time Step {j+1}', color=colors[j])
+#         else:
+#             ax.bar(x + i * (bar_width + space_between_features), data[:, i, j], bar_width, bottom=np.sum(data[:, i, :j], axis=1), color=colors[j])
+#
+# # Labeling
+# ax.set_xlabel('Prediction Points')
+# ax.set_ylabel('Feature Attribution')
+# ax.set_title('Stacked Bar Plot of Feature Attributions for Each Prediction Point')
+# ax.set_xticks(x + (bar_width + space_between_features) * 1.5)  # Adjusting x-axis labels for clarity
+# ax.set_xticklabels([ i+1 for i in range(prediction_points)])
+#
+# # Adjusting the legend to show each time step color
+# handles, labels = ax.get_legend_handles_labels()
+# ax.legend(handles[:time_steps], labels[:time_steps], loc='upper right', title='Time Steps')
+#
+# plt.show()
 
-# Assuming you extracted feature attributions correctly
-feat_atts = [res['results'][i][(0, 0)]['attributions'].detach().numpy() for i in range(2923, 2933)]  # Adjust range for number of predictions
 
-# Number of prediction points, features, and time steps (adjusted based on your data)
-prediction_points = len(feat_atts)
-features = ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4']
-time_steps = 4  # Adjusted to match the size of the last dimension of the data
-
-# Convert the list of arrays into a 3D NumPy array for easy plotting
-data = np.array(feat_atts)
-
-# Create a plot
-fig, ax = plt.subplots(figsize=(12, 6))
-
-# Positioning of bars on the x-axis for prediction points
-x = np.arange(prediction_points)
-
-# Bar width and space between feature groups within each prediction point
-bar_width = 0.15
-space_between_features = 0.05
-
-# Colors for the different time steps in each segment
-colors = plt.cm.viridis(np.linspace(0, 1, time_steps))
-
-# Plotting stacked bars for each feature within each prediction point
-for i, feature in enumerate(features):
-    for j in range(time_steps):
-        if j == 0:
-            ax.bar(x + i * (bar_width + space_between_features), data[:, i, j], bar_width, label=f'Time Step {j+1}', color=colors[j])
-        else:
-            ax.bar(x + i * (bar_width + space_between_features), data[:, i, j], bar_width, bottom=np.sum(data[:, i, :j], axis=1), color=colors[j])
-
-# Labeling
-ax.set_xlabel('Prediction Points')
-ax.set_ylabel('Feature Attribution')
-ax.set_title('Stacked Bar Plot of Feature Attributions for Each Prediction Point')
-ax.set_xticks(x + (bar_width + space_between_features) * 1.5)  # Adjusting x-axis labels for clarity
-ax.set_xticklabels([ i+1 for i in range(prediction_points)])
-
-# Adjusting the legend to show each time step color
-handles, labels = ax.get_legend_handles_labels()
-ax.legend(handles[:time_steps], labels[:time_steps], loc='upper right', title='Time Steps')
-
-plt.show()
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Assuming feat_atts is defined as described
-
-# Create dataset from feature attributions
-data = []
-for i, feat_att in enumerate(feat_atts):
-    for feat_idx in range(4):
-        for time_step in range(11):
-            data.append({
-                'prediction': chr(97 + i),  # a, b, c, d, e...
-                'feature': f'Feature {feat_idx + 1}',
-                'time_step': time_step,
-                'value': feat_att[time_step, feat_idx]
-            })
-
-data = pd.DataFrame(data)
-
-# Set up the plot
-fig, ax = plt.subplots(figsize=(15, 15), subplot_kw=dict(projection='polar'))
-
-# Calculate positions
-n_predictions = len(feat_atts)
-n_features = 4
-n_time_steps = 11
-width = 2 * np.pi / (n_predictions * n_features + n_predictions)  # added space between prediction groups
-
-# Define colors for time steps
-colors = plt.cm.viridis(np.linspace(0, 1, n_time_steps))
-
-# Plot the bars
-for i, prediction in enumerate(data['prediction'].unique()):
-    prediction_data = data[data['prediction'] == prediction]
-    for j, feature in enumerate(prediction_data['feature'].unique()):
-        feature_data = prediction_data[prediction_data['feature'] == feature]
-        feature_data = feature_data.sort_values('time_step')
-
-        angles = [i * (n_features + 1) * width + j * width + width / 2]
-
-        bottom = 0
-        for time_step, value in enumerate(feature_data['value']):
-            ax.bar(angles, [abs(value)], width=width, bottom=bottom,
-                   color=colors[time_step], alpha=0.7)
-            bottom += abs(value)
-
-# Set ylim and remove yticks
-max_value = data.groupby(['prediction', 'feature'])['value'].sum().max()
-ax.set_ylim(0, max_value * 1.1)
-ax.set_yticks([])
-
-# Add prediction labels
-for i, prediction in enumerate(data['prediction'].unique()):
-    angle = i * (n_features + 1) * width + (n_features / 2) * width
-    ax.text(angle, max_value * 1.15, prediction, ha='center', va='center',
-            fontsize=20, fontweight='bold')
-
-# Remove xticks
-ax.set_xticks([])
-
-# Add a title
-plt.title("Feature Attributions for Multiple Predictions", y=1.1, fontsize=24)
-
-# Add legend for time steps
-legend_elements = [plt.Rectangle((0, 0), 1, 1, color=colors[i]) for i in range(n_time_steps)]
-ax.legend(legend_elements, [f'Time {i + 1}' for i in range(n_time_steps)],
-          loc='center', bbox_to_anchor=(0.5, -0.1), ncol=6)
-
-plt.tight_layout()
-plt.show()
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
 # Assuming feat_atts is defined as described
-
-# Create dataset from feature attributions
-data = []
-for i, feat_att in enumerate(feat_atts):
-    for feat_idx in range(4):
-        for time_step in range(11):
-            data.append({
-                'prediction': chr(97 + i),  # a, b, c, d, e...
-                'feature': f'Feature {feat_idx + 1}',
-                'time_step': time_step,
-                'value': feat_att[time_step, feat_idx]
-            })
-
-data = pd.DataFrame(data)
-
-# Set up the plot
-fig, ax = plt.subplots(figsize=(20, 20), subplot_kw=dict(projection='polar'))
-
-# Calculate positions
-n_predictions = len(feat_atts)
-n_features = 4
-n_time_steps = 11
-width = 2 * np.pi / (n_predictions * n_features + n_predictions * 2)  # added more space between prediction groups
-
-# Define colors for time steps
-colors = plt.cm.viridis(np.linspace(0, 1, n_time_steps))
-
-# Plot the bars
-for i, prediction in enumerate(data['prediction'].unique()):
-    prediction_data = data[data['prediction'] == prediction]
-    for j, feature in enumerate(prediction_data['feature'].unique()):
-        feature_data = prediction_data[prediction_data['feature'] == feature]
-        feature_data = feature_data.sort_values('time_step')
-
-        angles = [i * (n_features + 2) * width + j * width + width / 2]
-
-        bottom_pos = 0
-        bottom_neg = 0
-        for time_step, value in enumerate(feature_data['value']):
-            if value >= 0:
-                ax.bar(angles, [value], width=width, bottom=bottom_pos,
-                       color=colors[time_step], alpha=0.7)
-                bottom_pos += value
-            else:
-                ax.bar(angles, [abs(value)], width=width, bottom=bottom_neg,
-                       color=colors[time_step], alpha=0.7)
-                bottom_neg -= abs(value)
-
-# Set ylim and remove yticks
-max_value = max(data.groupby(['prediction', 'feature'])['value'].sum().max(),
-                abs(data.groupby(['prediction', 'feature'])['value'].sum().min()))
-ax.set_ylim(-max_value * 1.1, max_value * 1.1)
-ax.set_yticks([])
-
-# Add prediction labels inside the circle
-for i, prediction in enumerate(data['prediction'].unique()):
-    angle = i * (n_features + 2) * width + (n_features / 2) * width
-    ax.text(angle, 0, prediction, ha='center', va='center',
-            fontsize=20, fontweight='bold')
-
-# Remove xticks
-ax.set_xticks([])
-
-# Add a title
-plt.title("Feature Attributions for Multiple Predictions", y=1.1, fontsize=24)
-
-# Add legend for time steps
-legend_elements = [plt.Rectangle((0, 0), 1, 1, color=colors[i]) for i in range(n_time_steps)]
-ax.legend(legend_elements, [f'Time {i + 1}' for i in range(n_time_steps)],
-          loc='center', bbox_to_anchor=(0.5, -0.1), ncol=6)
-
-# Add circular structure in the middle
-circle = plt.Circle((0, 0), 0.2, transform=ax.transData._b, color="white", zorder=3)
-ax.add_artist(circle)
-
-# Add grid lines
-ax.grid(True, linestyle='--', alpha=0.7)
-
-plt.tight_layout()
-plt.show()
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Assuming feat_atts is defined as described
+feat_atts = [res['results'][i][(0, 0)]['attributions'].detach().numpy() for i in range(2923, 2933)]
 
 # Create dataset from feature attributions
 data = []
@@ -483,10 +209,13 @@ fig, ax = plt.subplots(figsize=(20, 20), subplot_kw=dict(projection='polar'))
 n_predictions = len(feat_atts)
 n_features = 4
 n_time_steps = 11
-width = 2 * np.pi / (n_predictions * n_features + n_predictions * 2)  # added more space between prediction groups
+width = 2 * np.pi / (n_predictions * n_features + n_predictions * 4)  # Increase space between prediction groups
 
 # Define colors for time steps
-colors = plt.cm.RdYlGn(np.linspace(0, 1, n_time_steps))
+colors = [
+    'red', 'green', 'orange', 'grey', 'yellow', 'purple', 'pink', 'blue',
+    '#00FF00', '#EED8AE', '#FF5733'
+]
 
 # Plot the bars
 for i, prediction in enumerate(data['prediction'].unique()):
@@ -495,30 +224,50 @@ for i, prediction in enumerate(data['prediction'].unique()):
         feature_data = prediction_data[prediction_data['feature'] == feature]
         feature_data = feature_data.sort_values('time_step')
 
-        angles = [i * (n_features + 2) * width + j * width + width / 2]
+        angle = i * (n_features + 4) * width + j * width + width / 2
 
         bottom_pos = 0
         bottom_neg = 0
         for _, row in feature_data.iterrows():
             value = row['value']
             if value >= 0:
-                ax.bar(angles, [value], width=width, bottom=bottom_pos,
+                ax.bar([angle], [-value], width=width, bottom=bottom_pos,
                        color=colors[row['time_step'] + 5], alpha=0.7)
-                bottom_pos += value
+                bottom_pos -= value
             else:
-                ax.bar(angles, [abs(value)], width=width, bottom=bottom_neg,
+                ax.bar([angle], [abs(value)], width=width, bottom=bottom_neg,
                        color=colors[row['time_step'] + 5], alpha=0.7)
-                bottom_neg -= abs(value)
+                bottom_neg += abs(value)
 
-# Set ylim and remove yticks
-max_value = max(abs(data.groupby(['prediction', 'feature'])['value'].sum().max()),
+# Set ylim based on the maximum and minimum accumulated feature attributions
+max_value = max(data.groupby(['prediction', 'feature'])['value'].sum().max(),
                 abs(data.groupby(['prediction', 'feature'])['value'].sum().min()))
-ax.set_ylim(-max_value * 1.1, max_value * 1.1)
+
+ax.set_ylim(-max_value * 1.5, max_value * 1.5)  # Adjust ylim for extra space
 ax.set_yticks([])
+
+# Define reference values (include 0)
+reference_values = np.array([-0.53, -0.40, -0.26, -0.13, 0])
+
+# Add semi-circular reference lines between groups (including 0)
+for i in range(n_predictions - 1):
+    start_angle = (i * (n_features + 4) + n_features) * width
+    end_angle = (i + 1) * (n_features + 4) * width
+
+    for ref in reference_values:
+        if ref <= 0:  # Plot negative reference lines and 0
+            theta = np.linspace(start_angle + width, end_angle - width, num=100)
+            r = np.full_like(theta, -ref * 1.1)  # Negative values outward, 0 is at the center
+
+            ax.plot(theta, r, color="#bebebe", lw=2)
+
+            # Add labels for the negative reference lines and 0
+            mid_angle = (start_angle + end_angle) / 2  # Midpoint for labeling
+            ax.text(mid_angle, r[0], f'{ref:.2f}', ha='center', va='center', color="black", fontsize=12)
 
 # Add prediction labels inside the circle
 for i, prediction in enumerate(data['prediction'].unique()):
-    angle = i * (n_features + 2) * width + (n_features / 2) * width
+    angle = i * (n_features + 4) * width + (n_features / 2) * width
     ax.text(angle, 0, prediction, ha='center', va='center',
             fontsize=20, fontweight='bold')
 
@@ -544,12 +293,268 @@ plt.tight_layout()
 plt.show()
 
 
+
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
 # Assuming feat_atts is defined as described
+feat_atts = [res['results'][i][(0, 0)]['attributions'].detach().numpy() for i in range(2923, 2933)]
 
+# Create dataset from feature attributions
+data = []
+for i, feat_att in enumerate(feat_atts):
+    for feat_idx in range(4):
+        for time_step in range(11):
+            data.append({
+                'prediction': i + 1,  # Use numbers instead of alphabets
+                'feature': f'Feature {feat_idx + 1}',
+                'time_step': time_step - 5,  # Adjust time steps to match legend
+                'value': feat_att[time_step, feat_idx]
+            })
+
+data = pd.DataFrame(data)
+
+# Set up the plot
+fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(projection='polar'))
+
+# Calculate positions
+n_predictions = len(feat_atts)
+n_features = 4
+n_time_steps = 11
+width = 2 * np.pi / (n_predictions * n_features + n_predictions * 4)  # Increase space between prediction groups
+
+# Define colors for time steps
+colors = [
+    'red', 'green', 'orange', 'grey', 'yellow', 'purple', 'pink', 'blue',
+    '#00FF00', '#EED8AE', '#FF5733'
+]
+
+# Plot the bars
+for i, prediction in enumerate(data['prediction'].unique()):
+    prediction_data = data[data['prediction'] == prediction]
+    for j, feature in enumerate(prediction_data['feature'].unique()):
+        feature_data = prediction_data[prediction_data['feature'] == feature]
+        feature_data = feature_data.sort_values('time_step')
+
+        angle = i * (n_features + 4) * width + j * width + width / 2
+
+        bottom_pos = 0
+        bottom_neg = 0
+        for _, row in feature_data.iterrows():
+            value = row['value']
+            if value >= 0:
+                ax.bar([angle], [-value], width=width, bottom=bottom_pos,
+                       color=colors[row['time_step'] + 5], alpha=0.7)
+                bottom_pos -= value
+            else:
+                ax.bar([angle], [abs(value)], width=width, bottom=bottom_neg,
+                       color=colors[row['time_step'] + 5], alpha=0.7)
+                bottom_neg += abs(value)
+
+# Set ylim based on the maximum and minimum accumulated feature attributions
+max_value = max(data.groupby(['prediction', 'feature'])['value'].sum().max(),
+                abs(data.groupby(['prediction', 'feature'])['value'].sum().min()))
+
+ax.set_ylim(-max_value * 1.5, max_value * 1.5)  # Adjust ylim for extra space
+ax.set_yticks([])
+
+# Define reference values (include 0)
+reference_values = np.array([-0.53, -0.40, -0.26, -0.13, 0])
+
+# Add semi-circular reference lines between groups (including 0)
+for i in range(n_predictions - 1):
+    start_angle = (i * (n_features + 4) + n_features) * width
+    end_angle = (i + 1) * (n_features + 4) * width
+
+    for ref in reference_values:
+        if ref <= 0:  # Plot negative reference lines and 0
+            theta = np.linspace(start_angle + width, end_angle - width, num=100)
+            r = np.full_like(theta, -ref * 1.1)  # Negative values outward, 0 is at the center
+
+            ax.plot(theta, r, color="#bebebe", lw=2)
+
+            # Add labels for the negative reference lines and 0
+            mid_angle = (start_angle + end_angle) / 2  # Midpoint for labeling
+            if ref == 0:
+                label_r = -ref * 1.1
+            else:
+                label_r = -ref * 1.1
+
+            ax.text(mid_angle, label_r, f'{ref:.2f}', ha='center', va='center', color="black", fontsize=12)
+
+# Add prediction labels inside the circle and position them closer to the bars
+for i, prediction in enumerate(data['prediction'].unique()):
+    angle = i * (n_features + 4) * width + (n_features / 2) * width
+    ax.text(angle, -max_value * 0.2, str(prediction), ha='center', va='center', fontsize=20, fontweight='bold')
+
+# Remove xticks
+ax.set_xticks([])
+
+# Add a title
+plt.title("Circular Stacked Bar Plots of Feature Attributions for 4 Features, Grouped by Prediction Points", y=1.1, fontsize=12)
+
+# Add legend for time steps
+legend_elements = [plt.Rectangle((0, 0), 1, 1, color=colors[i]) for i in range(n_time_steps)]
+ax.legend(legend_elements, [f'Time {i - 5}' for i in range(n_time_steps)],
+          loc='center', bbox_to_anchor=(1.2, 0.5), title="Time")
+
+# Add circular structure in the middle
+circle = plt.Circle((0, 0), 0.2, transform=ax.transData._b, color="white", zorder=3)
+ax.add_artist(circle)
+
+# Add grid lines
+ax.grid(True, linestyle='--', alpha=0.7)
+
+plt.tight_layout()
+plt.show()
+
+
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Assuming you extracted feature attributions correctly
+feat_atts = [res['results'][i][(0, 0)]['attributions'].detach().numpy() for i in range(2923, 2933)]
+
+# Number of prediction points, features, and time steps (adjusted based on your data)
+prediction_points = len(feat_atts)
+features = ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4']
+time_steps = feat_atts[0].shape[0]  # Number of time steps from the shape of the feature attributions
+
+# Convert the list of arrays into a 3D NumPy array for easy plotting
+data = np.array(feat_atts)  # Shape: (prediction_points, time_steps, features)
+
+# Create a plot
+fig, ax = plt.subplots(figsize=(30, 30))
+
+# Positioning of bars on the x-axis for prediction points
+x = np.arange(prediction_points)
+
+# Bar width and space between feature groups within each prediction point
+bar_width = 0.15
+space_between_features = 0.05
+
+# Colors for the different time steps in each segment
+colors = plt.cm.viridis(np.linspace(0, 1, time_steps))
+
+# Create a dictionary to store the bars for the legend
+legend_bars = {}
+
+# Plotting stacked bars for each feature within each prediction point
+for i, feature in enumerate(features):
+    for j in range(time_steps):
+        # Calculate the position for the bars for each feature
+        pos = x + i * (bar_width + space_between_features)
+        # Create a bar plot for the current time step
+        if j == 0:
+            # Create the bottom value for stacked bars
+            bottom_values = np.zeros(prediction_points)
+        else:
+            bottom_values = np.sum(data[:, :j, i], axis=1)
+
+        bars = ax.bar(pos, data[:, j, i], bar_width, bottom=bottom_values, color=colors[j])
+
+        # Add a bar for the first occurrence of each time step to the legend
+        if j not in legend_bars:
+            legend_bars[j] = bars
+
+# Labeling
+ax.set_xlabel('Prediction Points')
+ax.set_ylabel('Feature Attribution')
+ax.set_title('Stacked Bar Plot of Feature Attributions for Each Prediction Point')
+ax.set_xticks(x + (bar_width + space_between_features) * (len(features) / 2))  # Adjust x-axis labels for clarity
+ax.set_xticklabels([f'Pred {i+1}' for i in range(prediction_points)])
+
+# Adding gridlines
+ax.grid(True, which='both', axis='both', linestyle='--', linewidth=0.7)
+
+# Adjusting the legend to show each time step color and placing it outside the plot
+handles = [legend_bars[j] for j in range(time_steps)]
+labels = [f'Time Step {j+1}' for j in range(time_steps)]
+ax.legend(handles=handles, labels=labels, loc='center left', bbox_to_anchor=(1, 0.5), title='Time Steps')
+
+plt.show()
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Assuming you extracted feature attributions correctly
+feat_atts = [res['results'][i][(0, 0)]['attributions'].detach().numpy() for i in range(2923, 2933)]
+
+# Number of prediction points, features, and time steps (adjusted based on your data)
+prediction_points = len(feat_atts)
+features = ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4']
+time_steps = feat_atts[0].shape[0]  # Number of time steps from the shape of the feature attributions
+
+# Convert the list of arrays into a 3D NumPy array for easy plotting
+data = np.array(feat_atts)  # Shape: (prediction_points, time_steps, features)
+
+# Create a plot
+fig, ax = plt.subplots(figsize=(30, 30))
+
+# Positioning of bars on the x-axis for prediction points
+x = np.arange(prediction_points)
+
+# Bar width and space between feature groups within each prediction point
+bar_width = 0.15
+space_between_features = 0.05
+
+# Colors for the different time steps in each segment
+colors = plt.cm.viridis(np.linspace(0, 1, time_steps))
+
+# Create a dictionary to store the bars for the legend
+legend_bars = {}
+
+# Plotting stacked bars for each feature within each prediction point
+for i, feature in enumerate(features):
+    for j in range(time_steps):
+        # Calculate the position for the bars for each feature
+        pos = x + i * (bar_width + space_between_features)
+        # Create a bar plot for the current time step
+        if j == 0:
+            # Create the bottom value for stacked bars
+            bottom_values = np.zeros(prediction_points)
+        else:
+            bottom_values = np.sum(data[:, :j, i], axis=1)
+
+        bars = ax.bar(pos, data[:, j, i], bar_width, bottom=bottom_values, color=colors[j], zorder=3)
+
+        # Add a bar for the first occurrence of each time step to the legend
+        if j not in legend_bars:
+            legend_bars[j] = bars
+
+# Labeling
+ax.set_xlabel('Prediction Points')
+ax.set_ylabel('Feature Attribution')
+ax.set_title('Stacked Bar Plot of Feature Attributions for Each Prediction Point')
+ax.set_xticks(x + (bar_width + space_between_features) * (len(features) / 2))  # Adjust x-axis labels for clarity
+ax.set_xticklabels([i+1 for i in range(prediction_points)])
+
+# Adding gridlines behind the bars
+ax.grid(True, which='both', axis='both', linestyle='--', linewidth=0.7, zorder=0)
+
+# Adjusting the legend to show each time step color and placing it outside the plot
+handles = [legend_bars[j] for j in range(time_steps)]
+labels = [f'Time Step {j+1}' for j in range(time_steps)]
+ax.legend(handles=handles, labels=labels, loc='center left', bbox_to_anchor=(1, 0.5), title='Time Steps')
+
+plt.show()
+
+
+
+
+
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Assuming feat_atts is defined as described
+feat_atts = [res['results'][i][(0, 0)]['attributions'].detach().numpy() for i in range(2923, 2933)]
 # Create dataset from feature attributions
 data = []
 for i, feat_att in enumerate(feat_atts):
@@ -636,6 +641,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Assuming feat_atts is defined as described
+feat_atts = [res['results'][i][(0, 0)]['attributions'].detach().numpy() for i in range(2923, 2933)]
 
 # Create dataset from feature attributions
 data = []
@@ -645,7 +651,7 @@ for i, feat_att in enumerate(feat_atts):
             data.append({
                 'prediction': chr(97 + i),  # a, b, c, d, e...
                 'feature': f'Feature {feat_idx + 1}',
-                'time_step': time_step,
+                'time_step': time_step - 5,  # Adjust time steps to match legend
                 'value': feat_att[time_step, feat_idx]
             })
 
@@ -657,10 +663,14 @@ fig, ax = plt.subplots(figsize=(20, 20), subplot_kw=dict(projection='polar'))
 # Calculate positions
 n_predictions = len(feat_atts)
 n_features = 4
-width = 2 * np.pi / (n_predictions * n_features)
+n_time_steps = 11
+width = 2 * np.pi / (n_predictions * n_features + n_predictions * 2)  # added more space between prediction groups
 
-# Define colors for features
-colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
+# Define colors for time steps
+colors = [
+    'red', 'green', 'orange', 'grey', 'yellow', 'purple', 'pink', 'blue',
+    '#00FF00', '#EED8AE', '#FF5733'
+]
 
 # Plot the bars
 for i, prediction in enumerate(data['prediction'].unique()):
@@ -669,24 +679,31 @@ for i, prediction in enumerate(data['prediction'].unique()):
         feature_data = prediction_data[prediction_data['feature'] == feature]
         feature_data = feature_data.sort_values('time_step')
 
-        angles = [i * n_features * width + j * width]
+        angle = i * (n_features + 2) * width + j * width + width / 2
 
-        bottom = 0
+        bottom_pos = 0
+        bottom_neg = 0
         for _, row in feature_data.iterrows():
-            value = abs(row['value'])  # Use absolute value for all bars
-            ax.bar(angles, [value], width=width, bottom=bottom,
-                   color=colors[j], alpha=0.7)
-            bottom += value
+            value = row['value']
+            if value >= 0:
+                ax.bar([angle], [-value], width=width, bottom=bottom_pos,
+                       color=colors[row['time_step'] + 5], alpha=0.7)
+                bottom_pos -= value
+            else:
+                ax.bar([angle], [abs(value)], width=width, bottom=bottom_neg,
+                       color=colors[row['time_step'] + 5], alpha=0.7)
+                bottom_neg += abs(value)
 
 # Set ylim and remove yticks
-max_value = data.groupby(['prediction', 'feature'])['value'].sum().abs().max()
-ax.set_ylim(0, max_value * 1.1)
+max_value = max(abs(data.groupby(['prediction', 'feature'])['value'].sum().max()),
+                abs(data.groupby(['prediction', 'feature'])['value'].sum().min()))
+ax.set_ylim(-max_value * 1.1, max_value * 1.1)
 ax.set_yticks([])
 
 # Add prediction labels inside the circle
 for i, prediction in enumerate(data['prediction'].unique()):
-    angle = i * n_features * width + (n_features / 2) * width
-    ax.text(angle, 0.1, prediction, ha='center', va='center',
+    angle = i * (n_features + 2) * width + (n_features / 2) * width
+    ax.text(angle, 0, prediction, ha='center', va='center',
             fontsize=20, fontweight='bold')
 
 # Remove xticks
@@ -695,10 +712,10 @@ ax.set_xticks([])
 # Add a title
 plt.title("Feature Attributions for Multiple Predictions", y=1.1, fontsize=24)
 
-# Add legend for features
-legend_elements = [plt.Rectangle((0, 0), 1, 1, color=color, alpha=0.7) for color in colors]
-ax.legend(legend_elements, [f'Feature {i + 1}' for i in range(4)],
-          loc='center', bbox_to_anchor=(0.5, -0.1), ncol=4)
+# Add legend for time steps
+legend_elements = [plt.Rectangle((0, 0), 1, 1, color=colors[i]) for i in range(n_time_steps)]
+ax.legend(legend_elements, [f'Time {i - 5}' for i in range(n_time_steps)],
+          loc='center', bbox_to_anchor=(1.2, 0.5), title="Time")
 
 # Add circular structure in the middle
 circle = plt.Circle((0, 0), 0.2, transform=ax.transData._b, color="white", zorder=3)
@@ -709,6 +726,11 @@ ax.grid(True, linestyle='--', alpha=0.7)
 
 plt.tight_layout()
 plt.show()
+
+
+
+
+
 
 
 import matplotlib.pyplot as plt
@@ -778,56 +800,6 @@ reshaped_data = np.vstack(feat_atts)
 
 print(reshaped_data.shape)  # This should output (110, 4)
 
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Assuming reshaped_data is your 110x4 numpy array
-
-def classify_value(x):
-    if x > 0:
-        return 0
-    elif -0.05 < x <= 0:
-        return 1
-    elif -0.15 < x <= -0.05:
-        return 2
-    else:
-        return 3
-
-# Define the ranges
-ranges = ['x > 0', '0 > x > -0.05', '-0.05 > x > -0.15', 'x < -0.15']
-
-# Calculate the counts for each feature and range
-counts = np.zeros((4, 4))
-for feature in range(4):
-    for value in reshaped_data[:, feature]:
-        counts[feature, classify_value(value)] += 1
-
-# Create the bubble chart
-fig, ax = plt.subplots(figsize=(12, 8))
-
-# Define colors for each range
-colors = ['#FFA07A', '#98FB98', '#87CEFA', '#DDA0DD']
-
-for feature in range(4):
-    for range_idx in range(4):
-        count = counts[feature, range_idx]
-        if count > 0:  # Only plot if there are values in this range
-            ax.scatter(feature, range_idx, s=count*10, alpha=0.6, color=colors[range_idx])
-            ax.annotate(f'{int(count)}\n{ranges[range_idx]}',
-                        (feature, range_idx),
-                        xytext=(0, 0), textcoords='offset points',
-                        ha='center', va='center')
-
-ax.set_xlabel('Features')
-ax.set_ylabel('Value Ranges')
-ax.set_xticks(range(4))
-ax.set_xticklabels(['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'])
-ax.set_yticks(range(4))
-ax.set_yticklabels(ranges)
-ax.set_title('Feature Attribution Clusters')
-
-plt.tight_layout()
-plt.show()
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -876,6 +848,186 @@ ax.set_xticklabels(['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'])
 ax.set_yticks(range(4))
 ax.set_yticklabels(ranges)
 ax.set_title('Feature Attribution Clusters')
+
+plt.tight_layout()
+plt.show()
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Assuming reshaped_data is your 110x4 numpy array
+
+def classify_value(x):
+    if x > 0:
+        return 0
+    elif -0.05 < x <= 0:
+        return 1
+    elif -0.15 < x <= -0.05:
+        return 2
+    else:
+        return 3
+
+
+# Define the ranges (we'll use these for the y-axis labels)
+ranges = ['x > 0', '0 > x > -0.05', '-0.05 > x > -0.15', 'x < -0.15']
+
+# Calculate the counts, min, and max for each feature and range
+counts = np.zeros((4, 4))
+mins = np.full((4, 4), np.inf)
+maxs = np.full((4, 4), -np.inf)
+
+for feature in range(4):
+    for value in reshaped_data[:, feature]:
+        range_idx = classify_value(value)
+        counts[feature, range_idx] += 1
+        mins[feature, range_idx] = min(mins[feature, range_idx], value)
+        maxs[feature, range_idx] = max(maxs[feature, range_idx], value)
+
+# Create the bubble chart
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Define colors for each range
+colors = ['#FFA07A', '#98FB98', '#87CEFA', '#DDA0DD']
+
+for feature in range(4):
+    for range_idx in range(4):
+        count = counts[feature, range_idx]
+        if count > 0:  # Only plot if there are values in this range
+            # Scale bubble size by count
+            bubble_size = count * 100
+
+            ax.scatter(feature, range_idx, s=bubble_size, alpha=0.6, color=colors[range_idx])
+
+            # Annotate with count, min, and max
+            annotation = f'{int(count)}\nMin: {mins[feature, range_idx]:.2f}\nMax: {maxs[feature, range_idx]:.2f}'
+            ax.annotate(annotation,
+                        (feature, range_idx),
+                        xytext=(0, 0), textcoords='offset points',
+                        ha='center', va='center')
+
+ax.set_xlabel('Features')
+ax.set_ylabel('Value Ranges')
+ax.set_xticks(range(4))
+ax.set_xticklabels(['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'])
+ax.set_yticks(range(4))
+ax.set_yticklabels(ranges)
+ax.set_title('Feature Attribution Clusters')
+
+plt.tight_layout()
+plt.show()
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Assuming reshaped_data is your 110x4 numpy array
+
+def classify_value(x):
+    if x > 0:
+        return 0
+    elif -0.05 < x <= 0:
+        return 1
+    elif -0.15 < x <= -0.05:
+        return 2
+    else:
+        return 3
+
+
+# Define the ranges (we'll use these for the y-axis labels)
+ranges = ['x > 0', '0 > x > -0.05', '-0.05 > x > -0.15', 'x < -0.15']
+
+# Calculate the counts, min, and max for each feature and range
+counts = np.zeros((4, 4))
+mins = np.full((4, 4), np.inf)
+maxs = np.full((4, 4), -np.inf)
+
+for feature in range(4):
+    for value in reshaped_data[:, feature]:
+        range_idx = classify_value(value)
+        counts[feature, range_idx] += 1
+        mins[feature, range_idx] = min(mins[feature, range_idx], value)
+        maxs[feature, range_idx] = max(maxs[feature, range_idx], value)
+
+# Create the bubble chart
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Define colors for each range
+colors = ['#FFA07A', '#98FB98', '#87CEFA', '#DDA0DD']
+
+for feature in range(4):
+    for range_idx in range(4):
+        count = counts[feature, range_idx]
+        if count > 0:  # Only plot if there are values in this range
+            # Scale bubble size by count
+            bubble_size = count * 100
+
+            ax.scatter(feature, range_idx, s=bubble_size, alpha=0.6, color=colors[range_idx])
+
+            # Annotate with count, min, and max to 5 decimal places
+            annotation = f'{int(count)}\nMin: {mins[feature, range_idx]:.5f}\nMax: {maxs[feature, range_idx]:.5f}'
+            ax.annotate(annotation,
+                        (feature, range_idx),
+                        xytext=(0, 0), textcoords='offset points',
+                        ha='center', va='center')
+
+ax.set_xlabel('Features')
+ax.set_ylabel('Value Ranges')
+ax.set_xticks(range(4))
+ax.set_xticklabels(['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'])
+ax.set_yticks(range(4))
+ax.set_yticklabels(ranges)
+ax.set_title('Feature Attribution Clusters')
+
+plt.tight_layout()
+plt.show()
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+
+# Assuming reshaped_data is your 110x4 numpy array
+
+# Apply k-means clustering
+n_clusters = 4  # Define the number of clusters
+kmeans = KMeans(n_clusters=n_clusters, random_state=0)
+clusters = kmeans.fit_predict(reshaped_data)
+
+# Calculate the counts, min, and max for each feature and cluster
+counts = np.zeros((4, n_clusters))
+mins = np.full((4, n_clusters), np.inf)
+maxs = np.full((4, n_clusters), -np.inf)
+
+for feature in range(4):
+    for i, value in enumerate(reshaped_data[:, feature]):
+        cluster = clusters[i]
+        counts[feature, cluster] += 1
+        mins[feature, cluster] = min(mins[feature, cluster], value)
+        maxs[feature, cluster] = max(maxs[feature, cluster], value)
+
+# Create the bubble chart
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Define colors for each cluster
+colors = ['#FFA07A', '#98FB98', '#87CEFA', '#DDA0DD']
+
+for feature in range(4):
+    for cluster_idx in range(n_clusters):
+        count = counts[feature, cluster_idx]
+        if count > 0:  # Only plot if there are values in this cluster
+            ax.scatter(feature, cluster_idx, s=count*100, alpha=0.6, color=colors[cluster_idx])
+            ax.annotate(f'{int(count)}\nMin: {mins[feature, cluster_idx]:.5f}\nMax: {maxs[feature, cluster_idx]:.5f}',
+                        (feature, cluster_idx),
+                        xytext=(0, 0), textcoords='offset points',
+                        ha='center', va='center')
+
+ax.set_xlabel('Features')
+ax.set_ylabel('Clusters')
+ax.set_xticks(range(4))
+ax.set_xticklabels(['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'])
+ax.set_yticks(range(n_clusters))
+ax.set_yticklabels([f'Cluster {i + 1}' for i in range(n_clusters)])
+ax.set_title('Feature Attribution Clusters with K-Means')
 
 plt.tight_layout()
 plt.show()
@@ -930,138 +1082,122 @@ for feature in range(4):
 plt.tight_layout()
 plt.show()
 
-# Print cluster centroids
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Assuming reshaped_data is your 110x4 numpy array
+
+# Define the ranges for clustering
+def classify_value(x):
+    if x > 0:
+        return 0
+    elif -0.05 < x <= 0:
+        return 1
+    elif -0.15 < x <= -0.05:
+        return 2
+    else:
+        return 3
+
+# Define the ranges (we'll use these for the y-axis labels)
+ranges = ['x > 0', '0 > x > -0.05', '-0.05 > x > -0.15', 'x < -0.15']
+
+# Calculate the counts for each feature and range
+counts = np.zeros((4, 4))
+min_values = np.full((4, 4), np.inf)
+max_values = np.full((4, 4), -np.inf)
+
 for feature in range(4):
-    print(f"\nFeature {feature + 1} cluster centroids:")
-    for i, centroid in enumerate(kmeans_results[feature]['centroids']):
-        print(f"  Cluster {i + 1}: {centroid[0]:.4f}")
+    for value in reshaped_data[:, feature]:
+        cluster = classify_value(value)
+        counts[feature, cluster] += 1
+        min_values[feature, cluster] = min(min_values[feature, cluster], value)
+        max_values[feature, cluster] = max(max_values[feature, cluster], value)
 
-data = []
-for i, feat_att in enumerate(feat_atts):
-    for feat_idx in range(4):
-        for time_step in range(11):
-            data.append({
-                'prediction': f'Pred {i + 2923}',
-                'feature': f'Feature {feat_idx + 1}',
-                'time_step': time_step,
-                'value': feat_att[time_step, feat_idx]
-            })
+# Create the bubble chart
+fig, ax = plt.subplots(figsize=(12, 8))
 
-data = pd.DataFrame(data)
+# Define colors for each range
+colors = ['#FFA07A', '#98FB98', '#87CEFA', '#DDA0DD']
 
-# Set up the plot
-fig, ax = plt.subplots(figsize=(15, 15), subplot_kw=dict(projection='polar'))
+for feature in range(4):
+    for range_idx in range(4):
+        count = counts[feature, range_idx]
+        if count > 0:  # Only plot if there are values in this range
+            ax.scatter(feature, range_idx, s=count*50, alpha=0.6, color=colors[range_idx])
+            ax.annotate(f'{int(count)}\n{min_values[feature, range_idx]:.5f}\n{max_values[feature, range_idx]:.5f}',
+                        (feature, range_idx),
+                        xytext=(0, 0), textcoords='offset points',
+                        ha='center', va='center')
 
-# Calculate positions
-n_predictions = len(feat_atts)
-n_features = 4
-n_time_steps = 11
-bar_width = 2 * np.pi / (n_predictions * n_features * n_time_steps)
-
-# Define colors for features
-colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
-
-# Plot the bars
-for i, prediction in enumerate(data['prediction'].unique()):
-    prediction_data = data[data['prediction'] == prediction]
-    for j, feature in enumerate(prediction_data['feature'].unique()):
-        feature_data = prediction_data[prediction_data['feature'] == feature]
-        feature_data = feature_data.sort_values('time_step')
-
-        angles = np.linspace(i * 2 * np.pi / n_predictions,
-                             (i + 1) * 2 * np.pi / n_predictions,
-                             n_time_steps, endpoint=False)
-
-        radii = feature_data['value'].abs().values
-
-        ax.bar(angles, radii, width=bar_width, bottom=j * 0.5,
-               color=colors[j], alpha=0.7, align='edge')
-
-# Set ylim and remove yticks
-ax.set_ylim(0, 2.5)
-ax.set_yticks([])
-
-# Add prediction labels
-for i, prediction in enumerate(data['prediction'].unique()):
-    angle = i * 2 * np.pi / n_predictions + np.pi / n_predictions
-    ax.text(angle, 2.7, prediction, ha='center', va='center',
-            rotation=np.degrees(angle) - 90)
-
-# Remove xticks and add circular gridlines
-ax.set_xticks([])
-ax.grid(True, axis='y', linestyle='--', alpha=0.7)
-
-# Add a title
-plt.title("Feature Attributions for Multiple Predictions", y=1.1)
-
-# Add legend
-legend_elements = [plt.Rectangle((0, 0), 1, 1, color=color, alpha=0.7)
-                   for color in colors]
-ax.legend(legend_elements, ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'],
-          loc='center', bbox_to_anchor=(0.5, -0.1), ncol=4)
+ax.set_xlabel('Features')
+ax.set_ylabel('Value Ranges')
+ax.set_xticks(range(4))
+ax.set_xticklabels(['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'])
+ax.set_yticks(range(4))
+ax.set_yticklabels(ranges)
+ax.set_title('Feature Attribution Clusters Based on Defined Ranges')
 
 plt.tight_layout()
 plt.show()
 
-data = []
-for i, feat_att in enumerate(feat_atts):
-    for feat_idx in range(4):
-        for time_step in range(11):
-            data.append({
-                'prediction': f'Prediction {i + 2923}',
-                'feature': f'Feature {feat_idx + 1}',
-                'time_step': time_step,
-                'value': feat_att[time_step, feat_idx]
-            })
 
-data = pd.DataFrame(data)
+import numpy as np
+import matplotlib.pyplot as plt
 
-# Calculate the number of bars and set up the plot
-number_of_predictions = len(feat_atts)
-number_of_features = 4
-number_of_time_steps = 11
-total_bars = number_of_predictions * number_of_features * number_of_time_steps
+# Assuming reshaped_data is your 110x4 numpy array
 
-fig, ax = plt.subplots(figsize=(15, 15), subplot_kw=dict(projection='polar'))
+# Define the ranges for clustering
+def classify_value(x):
+    if x > 0:
+        return 0
+    elif -0.05 < x <= 0:
+        return 1
+    elif -0.15 < x <= -0.05:
+        return 2
+    else:
+        return 3
 
-# Calculate bar positions and widths
-bar_width = 2 * np.pi / total_bars
-positions = np.linspace(0, 2 * np.pi, total_bars, endpoint=False)
+# Define the ranges (we'll use these for the y-axis labels)
+ranges = ['x > 0', '0 > x > -0.05', '-0.05 > x > -0.15', 'x < -0.15']
 
-# Plot the bars
-for i, prediction in enumerate(data['prediction'].unique()):
-    prediction_data = data[data['prediction'] == prediction]
-    for j, feature in enumerate(prediction_data['feature'].unique()):
-        feature_data = prediction_data[prediction_data['feature'] == feature]
-        feature_data = feature_data.sort_values('time_step')
+# Calculate the counts for each feature and range
+counts = np.zeros((4, 4))
+min_values = np.full((4, 4), np.inf)
+max_values = np.full((4, 4), -np.inf)
 
-        start_index = i * number_of_features * number_of_time_steps + j * number_of_time_steps
-        end_index = start_index + number_of_time_steps
+for feature in range(4):
+    for value in reshaped_data[:, feature]:
+        cluster = classify_value(value)
+        counts[feature, cluster] += 1
+        min_values[feature, cluster] = min(min_values[feature, cluster], value)
+        max_values[feature, cluster] = max(max_values[feature, cluster], value)
 
-        radii = feature_data['value'].abs().values
-        colors = plt.cm.viridis(j / number_of_features)
+# Create the bubble chart
+fig, ax = plt.subplots(figsize=(14, 10))  # Increased size
 
-        ax.bar(positions[start_index:end_index], radii, width=bar_width, bottom=0, alpha=0.7, color=colors)
+# Define colors for each range
+colors = ['#FFA07A', '#98FB98', '#87CEFA', '#DDA0DD']
 
-# Remove yticks and set ylim
-ax.set_yticks([])
-ax.set_ylim(0, data['value'].abs().max() * 1.1)
+for feature in range(4):
+    for range_idx in range(4):
+        count = counts[feature, range_idx]
+        if count > 0:  # Only plot if there are values in this range
+            ax.scatter(feature, range_idx, s=count*80, alpha=0.7, color=colors[range_idx])  # Increased bubble size
+            ax.annotate(f'{int(count)}\nMin: {min_values[feature, range_idx]:.5f}\nMax: {max_values[feature, range_idx]:.5f}',
+                        (feature, range_idx),
+                        xytext=(0, 0), textcoords='offset points',
+                        ha='center', va='center')
 
-# Add labels for predictions
-for i, prediction in enumerate(data['prediction'].unique()):
-    angle = i * number_of_features * number_of_time_steps * bar_width + (
-                number_of_features * number_of_time_steps * bar_width) / 2
-    ax.text(angle, ax.get_ylim()[1] * 1.1, prediction, ha='center', va='center', rotation=np.degrees(angle) - 90)
-
-# Remove xticks
-ax.set_xticks([])
-
-# Add a title
-plt.title("Feature Attributions for Multiple Predictions", y=1.1)
+ax.set_xlabel('Features')
+ax.set_ylabel('Value Ranges')
+ax.set_xticks(range(4))
+ax.set_xticklabels(['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'])
+ax.set_yticks(range(4))
+ax.set_yticklabels(ranges)
+ax.set_title('Feature Attribution Clusters Based on Defined Ranges')
 
 plt.tight_layout()
 plt.show()
-
 
 
 import matplotlib.pyplot as plt
@@ -1193,87 +1329,6 @@ ax.legend(handles=handles, labels=labels, loc='upper right', title='Time Steps')
 plt.show()
 
 
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
-# Create dummy data
-np.random.seed(0)
-data = pd.DataFrame({
-    'individual': [f"Mister {i+1}" for i in range(60)],
-    'group': ['A']*10 + ['B']*30 + ['C']*14 + ['D']*6,
-    'value1': np.random.randint(10, 101, 60),
-    'value2': np.random.randint(10, 101, 60),
-    'value3': np.random.randint(10, 101, 60),
-})
-
-# Transform data to long format
-data_long = pd.melt(data, id_vars=['individual', 'group'], value_vars=['value1', 'value2', 'value3'], var_name='observation', value_name='value')
-
-# Add empty bars to separate groups
-empty_bar = 2
-nObsType = len(data_long['observation'].unique())
-to_add = pd.DataFrame(np.nan, index=range(empty_bar * len(data_long['group'].unique()) * nObsType), columns=data_long.columns)
-to_add['group'] = np.repeat(data_long['group'].unique(), empty_bar * nObsType)
-data_long = pd.concat([data_long, to_add]).sort_values(by=['group', 'individual']).reset_index(drop=True)
-data_long['id'] = np.repeat(np.arange(1, len(data_long) // nObsType + 1), nObsType)
-
-# Get label positions
-label_data = data_long.groupby(['id', 'individual']).agg(tot=('value', 'sum')).reset_index()
-number_of_bar = len(label_data)
-angle = 90 - 360 * (label_data['id'] - 0.5) / number_of_bar
-label_data['hjust'] = np.where(angle < -90, 1, 0)
-label_data['angle'] = np.where(angle < -90, angle + 180, angle)
-
-# Prepare base lines
-base_data = data_long.groupby('group').agg(start=('id', 'min'), end=('id', 'max')).reset_index()
-base_data['title'] = (base_data['start'] + base_data['end']) / 2
-
-# Prepare grid lines
-grid_data = base_data.copy()
-grid_data['end'] = grid_data['end'].shift(-1).fillna(grid_data['end']) + 1
-grid_data['start'] = grid_data['start'] - 1
-grid_data = grid_data.iloc[:-1]
-
-# Plotting
-fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
-cmap = plt.get_cmap('viridis', len(data_long['observation'].unique()))
-
-# Stacked bars
-for i, obs in enumerate(data_long['observation'].unique()):
-    subset = data_long[data_long['observation'] == obs]
-    bars = ax.bar(np.deg2rad(subset['id'] * 360 / number_of_bar), subset['value'], width=np.deg2rad(360 / number_of_bar), color=cmap(i), alpha=0.5, edgecolor='none', label=obs, bottom=subset.groupby('id')['value'].cumsum().shift(fill_value=0))
-
-# Grid lines
-for _, row in grid_data.iterrows():
-    ax.plot(np.deg2rad([row['start'] * 360 / number_of_bar, row['end'] * 360 / number_of_bar]), [0, 0], color='grey', alpha=0.8, linewidth=0.6)
-    ax.plot(np.deg2rad([row['start'] * 360 / number_of_bar, row['end'] * 360 / number_of_bar]), [50, 50], color='grey', alpha=0.8, linewidth=0.6)
-    ax.plot(np.deg2rad([row['start'] * 360 / number_of_bar, row['end'] * 360 / number_of_bar]), [100, 100], color='grey', alpha=0.8, linewidth=0.6)
-    ax.plot(np.deg2rad([row['start'] * 360 / number_of_bar, row['end'] * 360 / number_of_bar]), [150, 150], color='grey', alpha=0.8, linewidth=0.6)
-    ax.plot(np.deg2rad([row['start'] * 360 / number_of_bar, row['end'] * 360 / number_of_bar]), [200, 200], color='grey', alpha=0.8, linewidth=0.6)
-
-# Labels
-for _, row in label_data.iterrows():
-    ax.text(np.deg2rad(row['id'] * 360 / number_of_bar), row['tot'] + 10, row['individual'], ha='center', va='bottom', color='black', fontsize=12, fontweight='bold', rotation=row['angle'])
-
-# Base lines and group labels
-for _, row in base_data.iterrows():
-    ax.plot(np.deg2rad([row['start'] * 360 / number_of_bar, row['end'] * 360 / number_of_bar]), [-5, -5], color='black', alpha=0.8, linewidth=0.6)
-    ax.text(np.deg2rad(row['title'] * 360 / number_of_bar), -18, row['group'], ha='center', va='bottom', color='black', fontsize=10, fontweight='bold')
-
-# Final touches
-ax.set_ylim(-150, data_long['value'].max() + 50)
-ax.set_yticks([])
-ax.set_xticks([])
-ax.set_rlabel_position(-45)
-
-# Add legend
-ax.legend(loc='upper right', bbox_to_anchor=(1.1, 1))
-
-# Save the plot
-plt.savefig("output.png", bbox_inches='tight')
-plt.show()
 
 
 
